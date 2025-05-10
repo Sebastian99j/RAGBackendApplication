@@ -114,7 +114,8 @@ def ask_gpt2(question: str, top_k: int):
 HF_API_TOKEN = os.getenv("HF_API_TOKEN")
 mistral_pipe = pipeline(
     "text-generation",
-    model="microsoft/phi-2",
+    #model="microsoft/phi-2",
+    model="gpt2",
     token=HF_API_TOKEN,
     pad_token_id=50256,
     max_new_tokens=60,
@@ -142,6 +143,10 @@ def ask_hf_api(question: str, top_k: int):
     return output.strip()
 
 # === Endpointy API ===
+@app.get("/healthcheck")
+def healthcheck():
+    return {"status" : "success"}
+
 @app.post("/ask-openai")
 def endpoint_openai(req: QueryRequest):
     return {"model": "openai", "answer": ask_openai(req.question, req.top_k)}
