@@ -1,0 +1,9 @@
+fastapi~=0.115.12
+uvicorn[standard]
+faiss-cpu~=1.11.0
+sentence-transformers~=4.1.0
+transformers~=4.51.3
+langchain~=0.3.25
+langchain-huggingface
+openai~=1.78.0
+pydantic~=2.11.4
