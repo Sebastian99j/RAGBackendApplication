@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Skopiuj cały projekt
 COPY . .
 
-COPY hf-cache /root/.cache/huggingface
+#COPY hf-cache /root/.cache/huggingface
 
 # Exponuj port (FastAPI domyślnie działa na 8000)
 EXPOSE 8000
