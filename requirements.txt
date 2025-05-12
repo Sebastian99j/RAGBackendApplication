@@ -9,3 +9,7 @@ openai~=1.78.0
 pydantic~=2.11.4
 python-dotenv~=1.1.0
 pinecone~=6.0.2
+datasets~=3.6.0
+nltk~=3.9.1
+rouge-score~=0.1.2
+langchain-community~=0.3.23

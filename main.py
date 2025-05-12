@@ -9,6 +9,13 @@ from langchain_huggingface import HuggingFacePipeline
 from openai import OpenAI
 from fastapi.middleware.cors import CORSMiddleware
 from pinecone import Pinecone, ServerlessSpec
+from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain.chains import RetrievalQA
+from typing import List
+from transformers import Trainer, TrainingArguments, DataCollatorForLanguageModeling
+from datasets import Dataset
+import uuid
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -29,6 +36,14 @@ class QueryRequest(BaseModel):
     question: str
     top_k: int = 2
     database: str = "faiss" # 'faiss' or 'pinecone'
+
+class TrainingExample(BaseModel):
+    input: str
+    output: str
+
+class FineTuneRequest(BaseModel):
+    training_data: List[TrainingExample]
+    epochs: int = 3
 
 # === Dokumenty bazowe ===
 # === Wczytaj dokumenty z pliku ===
@@ -121,18 +136,22 @@ def ask_hf(question: str, top_k: int, database: str):
     output = hf_pipe(prompt)[0]['generated_text']
     return output[len(prompt):].strip()
 
-# === LangChain (nowy styl) ===
+# === LangChain ===
 prompt = PromptTemplate.from_template("Kontekst: {context}\nPytanie: {question}\nOdpowiedź:")
 llm = HuggingFacePipeline(pipeline=hf_pipe)
 chain = prompt | llm  # runnable pipeline
+
+embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+faiss_index = FAISS.from_texts(documents, embedding_model)
+retriever_faiss = faiss_index.as_retriever()
 
 def ask_langchain(question: str, top_k: int, database: str):
     context = get_context(question, top_k, database)
     return chain.invoke({"context": context, "question": question})
 
-# Załaduj GPT-2 (lub distilgpt2 – mniejszy)
-tokenizer = AutoTokenizer.from_pretrained("distilgpt2")
-model = AutoModelForCausalLM.from_pretrained("distilgpt2")
+# Załaduj GPT-2 (lub distilgpt2)
+tokenizer = AutoTokenizer.from_pretrained("gpt2")
+model = AutoModelForCausalLM.from_pretrained("gpt2")
 
 # Pipeline do generowania tekstu
 gpt2_pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, max_new_tokens=100)
@@ -204,3 +223,55 @@ def endpoint_gpt2(req: QueryRequest):
 @app.post("/ask-hf-api")
 def endpoint_hf_api(req: QueryRequest):
     return {"model": "mistral-api", "answer": ask_hf_api(req.question, req.top_k,  req.database)}
+
+@app.post("/langchain-faiss")
+def endpoint_langchain_faiss(req: QueryRequest):
+    qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever_faiss)
+    answer = qa_chain.run(req.question)
+    return {"model": "langchain-faiss", "answer": answer}
+
+@app.post("/fine-tune-gpt2")
+def fine_tune_gpt2(req: FineTuneRequest):
+    texts = [f"User: {ex.input}\nAI: {ex.output}" for ex in req.training_data]
+    dataset = Dataset.from_dict({"text": texts})
+
+    tokenizer.pad_token = tokenizer.eos_token
+
+    def tokenize(example):
+        return tokenizer(example["text"], truncation=True, padding="max_length", max_length=128)
+
+    tokenized_dataset = dataset.map(tokenize)
+
+    data_collator = DataCollatorForLanguageModeling(tokenizer=tokenizer, mlm=False)
+    training_args = TrainingArguments(
+        output_dir="./gpt2-temp-output",
+        overwrite_output_dir=True,
+        num_train_epochs=req.epochs,
+        per_device_train_batch_size=4,
+        logging_steps=10,
+        save_total_limit=1,
+        save_steps=50,
+        report_to="none"
+    )
+
+    trainer = Trainer(
+        model=model,
+        args=training_args,
+        train_dataset=tokenized_dataset,
+        tokenizer=tokenizer,
+        data_collator=data_collator,
+    )
+
+    trainer.train()
+
+    save_path = f"./gpt2-finetuned-{uuid.uuid4().hex[:8]}"
+    model.save_pretrained(save_path)
+    tokenizer.save_pretrained(save_path)
+
+    global gpt2_pipe
+    gpt2_pipe = pipeline("text-generation", model=save_path, tokenizer=save_path, max_new_tokens=100)
+
+    return {
+        "status": "success",
+        "message": f"Model został przetrenowany i zaktualizowany ({save_path})."
+    }
