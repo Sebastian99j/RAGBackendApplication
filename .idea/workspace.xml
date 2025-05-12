@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e5b72dcf-2b6f-421c-9ec8-57edbc50ec1d" name="Changes" comment="Add pinecone database">
-      <change afterPath="$PROJECT_DIR$/test_model.py" afterDir="false" />
+    <list default="true" id="e5b72dcf-2b6f-421c-9ec8-57edbc50ec1d" name="Changes" comment="Add fine-tuning to gpt2 model">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -134,7 +132,7 @@
       <workItem from="1746957491718" duration="5107000" />
       <workItem from="1746976560817" duration="2254000" />
       <workItem from="1746990129292" duration="1995000" />
-      <workItem from="1747031578007" duration="5492000" />
+      <workItem from="1747031578007" duration="8473000" />
     </task>
     <task id="LOCAL-00001" summary="Init sample RAG backend">
       <option name="closed" value="true" />
@@ -160,7 +158,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746960937020</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Add fine-tuning to gpt2 model">
+      <option name="closed" value="true" />
+      <created>1747046307126</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1747046307126</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -173,7 +179,8 @@
     <MESSAGE value="Init sample RAG backend" />
     <MESSAGE value="Add health check" />
     <MESSAGE value="Add pinecone database" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add pinecone database" />
+    <MESSAGE value="Add fine-tuning to gpt2 model" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add fine-tuning to gpt2 model" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/LLMsample$test_model.coverage" NAME="test_model Coverage Results" MODIFIED="1747042669918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
