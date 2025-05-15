@@ -16,22 +16,21 @@ from typing import List
 from transformers import Trainer, TrainingArguments, DataCollatorForLanguageModeling
 from datasets import Dataset
 import uuid
-
 from dotenv import load_dotenv
+
+
 load_dotenv()
 
-# === FastAPI app ===
 app = FastAPI(title="Multi-LLM RAG API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # lub ["http://localhost:3000"]
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# === Dane wejściowe ===
 class QueryRequest(BaseModel):
     question: str
     top_k: int = 2
@@ -45,15 +44,12 @@ class FineTuneRequest(BaseModel):
     training_data: List[TrainingExample]
     epochs: int = 3
 
-# === Dokumenty bazowe ===
-# === Wczytaj dokumenty z pliku ===
 def load_documents(file_path="knowledge_base.txt"):
     with open(file_path, encoding="utf-8") as f:
         return [line.strip() for line in f if line.strip()]
 
 documents = load_documents()
 
-# === Wektoryzacja ===
 embedder = SentenceTransformer('all-MiniLM-L6-v2')
 doc_embeddings = embedder.encode(documents, convert_to_numpy=True)
 
@@ -61,7 +57,6 @@ dimension = doc_embeddings.shape[1]
 index = faiss.IndexFlatL2(dimension)
 index.add(doc_embeddings)
 
-# === Pinecone ===
 PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
 PINECONE_ENV = os.getenv("PINECONE_ENV", "us-east1-gcp")
 pinecone = Pinecone(api_key=PINECONE_API_KEY)
@@ -80,7 +75,6 @@ if index_name not in [idx.name for idx in pinecone.list_indexes()]:
 
 pinecone_index = pinecone.Index(index_name)
 
-# --- WSTAWIENIE EMBEDDINGÓW DO PINECONE ---
 pinecone_vectors = [
     {
         "id": f"doc-{i}",
@@ -94,6 +88,7 @@ for i in range(0, len(pinecone_vectors), batch_size):
     batch = pinecone_vectors[i:i + batch_size]
     pinecone_index.upsert(vectors=batch)
 
+
 def get_context(question: str, top_k: int, backend: str):
     query_vec = embedder.encode([question])
 
@@ -105,7 +100,7 @@ def get_context(question: str, top_k: int, backend: str):
         _, idxs = index.search(vec, k=top_k)
         return "\n".join([documents[i] for i in idxs[0]])
 
-# === OpenAI GPT ===
+
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 def ask_openai(question: str, top_k: int, database: str):
@@ -124,52 +119,45 @@ Odpowiedź:"""
     )
     return response.choices[0].message.content.strip()
 
-# === Hugging Face GPT2 ===
+
 tokenizer = AutoTokenizer.from_pretrained("distilgpt2")
 model = AutoModelForCausalLM.from_pretrained("distilgpt2")
 hf_pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, max_new_tokens=100)
 
+
 def ask_hf(question: str, top_k: int, database: str):
     context = get_context(question, top_k, database)
-
     prompt = f"Odpowiedz na pytanie: {question}\nNa podstawie:\n{context}\nOdpowiedź:"
     output = hf_pipe(prompt)[0]['generated_text']
     return output[len(prompt):].strip()
 
-# === LangChain ===
+
 prompt = PromptTemplate.from_template("Kontekst: {context}\nPytanie: {question}\nOdpowiedź:")
 llm = HuggingFacePipeline(pipeline=hf_pipe)
-chain = prompt | llm  # runnable pipeline
+chain = prompt | llm
 
 embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 faiss_index = FAISS.from_texts(documents, embedding_model)
 retriever_faiss = faiss_index.as_retriever()
 
+
 def ask_langchain(question: str, top_k: int, database: str):
     context = get_context(question, top_k, database)
     return chain.invoke({"context": context, "question": question})
 
-# Załaduj GPT-2 (lub distilgpt2)
+
 tokenizer = AutoTokenizer.from_pretrained("gpt2")
 model = AutoModelForCausalLM.from_pretrained("gpt2")
 
-# Pipeline do generowania tekstu
 gpt2_pipe = pipeline("text-generation", model=model, tokenizer=tokenizer, max_new_tokens=100)
 
+
 def ask_gpt2(question: str, top_k: int, database: str):
-    # 1. Wektoryzacja zapytania
     context = get_context(question, top_k, database)
-
-    # 2. Zbudowanie prompta
     prompt = f"Odpowiedz na pytanie: {question}\nNa podstawie:\n{context}\nOdpowiedź:"
-
-    # 3. Generowanie tekstu
     output = gpt2_pipe(prompt)[0]["generated_text"]
-
-    # 4. Wyciągnięcie samej odpowiedzi
     return output[len(prompt):].strip()
 
-# microsoft/phi-2
 HF_API_TOKEN = os.getenv("HF_API_TOKEN")
 mistral_pipe = pipeline(
     "text-generation",
@@ -180,6 +168,7 @@ mistral_pipe = pipeline(
     max_new_tokens=60,
     return_full_text=False
 )
+
 
 def ask_hf_api(question: str, top_k: int, database: str):
     context = get_context(question, top_k, database)
@@ -199,36 +188,43 @@ def ask_hf_api(question: str, top_k: int, database: str):
     output = mistral_pipe(prompt)[0]['generated_text']
     return output.strip()
 
-# === Endpointy API ===
+
 @app.get("/healthcheck")
 def healthcheck():
     return {"status" : "success"}
+
 
 @app.post("/ask-openai")
 def endpoint_openai(req: QueryRequest):
     return {"model": "openai", "answer": ask_openai(req.question, req.top_k,  req.database)}
 
+
 @app.post("/ask-hf")
 def endpoint_hf(req: QueryRequest):
     return {"model": "huggingface", "answer": ask_hf(req.question, req.top_k,  req.database)}
+
 
 @app.post("/ask-langchain")
 def endpoint_langchain(req: QueryRequest):
     return {"model": "langchain", "answer": ask_langchain(req.question, req.top_k,  req.database)}
 
+
 @app.post("/ask-gpt2")
 def endpoint_gpt2(req: QueryRequest):
     return {"model": "gpt2-local", "answer": ask_gpt2(req.question, req.top_k,  req.database)}
 
+
 @app.post("/ask-hf-api")
 def endpoint_hf_api(req: QueryRequest):
     return {"model": "mistral-api", "answer": ask_hf_api(req.question, req.top_k,  req.database)}
+
 
 @app.post("/langchain-faiss")
 def endpoint_langchain_faiss(req: QueryRequest):
     qa_chain = RetrievalQA.from_chain_type(llm=llm, retriever=retriever_faiss)
     answer = qa_chain.run(req.question)
     return {"model": "langchain-faiss", "answer": answer}
+
 
 @app.post("/fine-tune-gpt2")
 def fine_tune_gpt2(req: FineTuneRequest):
