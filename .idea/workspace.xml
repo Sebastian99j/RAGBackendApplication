@@ -4,20 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e5b72dcf-2b6f-421c-9ec8-57edbc50ec1d" name="Changes" comment="Refactor project structure and add .dockerignore">
-      <change afterPath="$PROJECT_DIR$/api/endpoints_kafka.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/kafka_consumer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/kafka_producer.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/redis_client.py" afterDir="false" />
+    <list default="true" id="e5b72dcf-2b6f-421c-9ec8-57edbc50ec1d" name="Changes" comment="Add handling redis and kafka">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/endpoints.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/endpoints.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/api/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/api/schemas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/kafka_consumer.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/kafka_consumer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/huggingface_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/huggingface_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/langchain_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/langchain_service.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/services/openai_service.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/openai_service.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -198,7 +189,7 @@
       <workItem from="1747416664871" duration="2176000" />
       <workItem from="1747418871079" duration="142000" />
       <workItem from="1747424158744" duration="9000" />
-      <workItem from="1747830490758" duration="2443000" />
+      <workItem from="1747830490758" duration="5239000" />
     </task>
     <task id="LOCAL-00001" summary="Init sample RAG backend">
       <option name="closed" value="true" />
@@ -264,7 +255,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747418975103</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Add handling redis and kafka">
+      <option name="closed" value="true" />
+      <created>1747832974297</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1747832974297</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -282,7 +281,8 @@
     <MESSAGE value="Fix dockerfile" />
     <MESSAGE value="Code refactor" />
     <MESSAGE value="Refactor project structure and add .dockerignore" />
-    <option name="LAST_COMMIT_MESSAGE" value="Refactor project structure and add .dockerignore" />
+    <MESSAGE value="Add handling redis and kafka" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add handling redis and kafka" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/LLMsample$test_model.coverage" NAME="test_model Coverage Results" MODIFIED="1747042669918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
