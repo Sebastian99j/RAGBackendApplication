@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e5b72dcf-2b6f-421c-9ec8-57edbc50ec1d" name="Changes" comment="Add handling redis and kafka">
+    <list default="true" id="e5b72dcf-2b6f-421c-9ec8-57edbc50ec1d" name="Changes" comment="Fix config and add hf_xet to requirements">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/config.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/kafka_consumer.py" beforeDir="false" afterPath="$PROJECT_DIR$/core/kafka_consumer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,21 +51,21 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_MARK_IGNORED_FILES_AS_EXCLUDED": "true",
-    "Python.test_model.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "C:/Users/Sebastian/PycharmProjects/LLMsample",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_MARK_IGNORED_FILES_AS_EXCLUDED&quot;: &quot;true&quot;,
+    &quot;Python.test_model.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Sebastian/PycharmProjects/LLMsample&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Sebastian\PycharmProjects\LLMsample\static_files" />
@@ -189,7 +187,8 @@
       <workItem from="1747416664871" duration="2176000" />
       <workItem from="1747418871079" duration="142000" />
       <workItem from="1747424158744" duration="9000" />
-      <workItem from="1747830490758" duration="5239000" />
+      <workItem from="1747830490758" duration="5278000" />
+      <workItem from="1747911611787" duration="2797000" />
     </task>
     <task id="LOCAL-00001" summary="Init sample RAG backend">
       <option name="closed" value="true" />
@@ -263,7 +262,15 @@
       <option name="project" value="LOCAL" />
       <updated>1747832974297</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Fix config and add hf_xet to requirements">
+      <option name="closed" value="true" />
+      <created>1747835801737</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1747835801737</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -282,7 +289,8 @@
     <MESSAGE value="Code refactor" />
     <MESSAGE value="Refactor project structure and add .dockerignore" />
     <MESSAGE value="Add handling redis and kafka" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add handling redis and kafka" />
+    <MESSAGE value="Fix config and add hf_xet to requirements" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fix config and add hf_xet to requirements" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/LLMsample$test_model.coverage" NAME="test_model Coverage Results" MODIFIED="1747042669918" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

@@ -6,8 +6,6 @@ from core.kafka_consumer import start_kafka_listener
 
 app = FastAPI(title="Multi-LLM RAG API")
 
-threading.Thread(target=start_kafka_listener, daemon=True).start()
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -15,6 +13,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+try:
+    threading.Thread(target=start_kafka_listener, daemon=True).start()
+except Exception as e:
+    print("[Kafka Init Error]", e)
 
 app.include_router(api_router)
 
